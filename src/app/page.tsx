@@ -14,6 +14,8 @@ export default function Home() {
     { id: "0", nome: "Sou uma tarefa", status: false },
   ]);
 
+  const [filtro, setFiltro] = useState(0); // 0 = todas, 1 = ativas, 2 = completas
+
   const [tarefasConcluidas, setTarefasConcluidas] = useState<Tarefa[]>([]);
 
   const handleClick = (id: string, nome: string) => {
@@ -29,9 +31,8 @@ export default function Home() {
     console.log(tarefasConcluidas);
   }, [tarefasConcluidas]);
 
-  function displayTarefas() {
+  function displayTarefas(filter: number) {
     //if filter = 0 display all tasks. If filter = 1 display only active tasks. If filter = 2 display only completed tasks.
-    let filter = 0;
     if (tarefas.length > 0 && filter === 0) {
       return tarefas.map((tarefa) => (
         <li key={tarefa.id}>
@@ -54,8 +55,40 @@ export default function Home() {
           )}
         </li>
       ));
-    } else {
-      return <li>Não há tarefas</li>;
+    } else if (tarefas.length > 0 && filter === 1) {
+      return tarefas.map((tarefa) => (
+        <li key={tarefa.id}>
+          <input
+            type="checkbox"
+            onClick={() => {
+              tarefa.status = !tarefa.status;
+              setTarefasConcluidas([...tarefasConcluidas, tarefa]);
+            }}
+          />
+          {!tarefa.status && (
+            <label className="bg-green-400" htmlFor={tarefa.id}>
+              {tarefa.nome}
+            </label>
+          )}
+        </li>
+      ));
+    } else if (tarefas.length > 0 && filter === 2) {
+      return tarefas.map((tarefa) => (
+        <li key={tarefa.id}>
+          <input
+            type="checkbox"
+            onClick={() => {
+              tarefa.status = !tarefa.status;
+              setTarefasConcluidas([...tarefasConcluidas, tarefa]);
+            }}
+          />
+          {tarefa.status && (
+            <label htmlFor={tarefa.id} className="line-through">
+              {tarefa.nome}
+            </label>
+          )}
+        </li>
+      ));
     }
   }
 
@@ -80,14 +113,16 @@ export default function Home() {
         <div>
           <ul>
             <li>Tarefas</li>
-            {displayTarefas()}
+            {filtro === 0 && displayTarefas(0)}
+            {filtro === 1 && displayTarefas(1)}
+            {filtro === 2 && displayTarefas(2)}
           </ul>
         </div>
         <div className="flex flex-row">
           <p>Contador de Tarefas restantes</p>
-          <button>Todas as tarefas</button>
-          <button>Tarefas Ativas</button>
-          <button>Tarefas Completas</button>
+          <button onClick={() => setFiltro(0)}>Todas as tarefas</button>
+          <button onClick={() => setFiltro(1)}>Tarefas Ativas</button>
+          <button onClick={() => setFiltro(2)}>Tarefas Completas</button>
         </div>
       </div>
     </div>
