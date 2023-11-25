@@ -16,8 +16,6 @@ export default function Home() {
 
   const [filtro, setFiltro] = useState(0); // 0 = todas, 1 = ativas, 2 = completas
 
-  const [tarefasConcluidas, setTarefasConcluidas] = useState<Tarefa[]>([]);
-
   const handleClick = (id: string, nome: string) => {
     setTarefas([...tarefas, { id: id, nome: nome, status: false }]);
   };
@@ -28,8 +26,8 @@ export default function Home() {
 
   // make useEffect hook
   useEffect(() => {
-    console.log(tarefasConcluidas);
-  }, [tarefasConcluidas]);
+    console.log(tarefas);
+  }, [tarefas]);
 
   function displayTarefas(filter: number) {
     //if filter = 0 display all tasks. If filter = 1 display only active tasks. If filter = 2 display only completed tasks.
@@ -39,9 +37,10 @@ export default function Home() {
           <input
             type="checkbox"
             onClick={() => {
-              tarefa.status = !tarefa.status;
-              setTarefasConcluidas([...tarefasConcluidas, tarefa]);
+              tarefa.status ? (tarefa.status = false) : (tarefa.status = true);
+              setTarefas([...tarefas]);
             }}
+            checked={tarefa.status}
           />
           {tarefa.status && (
             <label htmlFor={tarefa.id} className="line-through">
@@ -58,13 +57,6 @@ export default function Home() {
     } else if (tarefas.length > 0 && filter === 1) {
       return tarefas.map((tarefa) => (
         <li key={tarefa.id}>
-          <input
-            type="checkbox"
-            onClick={() => {
-              tarefa.status = !tarefa.status;
-              setTarefasConcluidas([...tarefasConcluidas, tarefa]);
-            }}
-          />
           {!tarefa.status && (
             <label className="bg-green-400" htmlFor={tarefa.id}>
               {tarefa.nome}
@@ -75,13 +67,6 @@ export default function Home() {
     } else if (tarefas.length > 0 && filter === 2) {
       return tarefas.map((tarefa) => (
         <li key={tarefa.id}>
-          <input
-            type="checkbox"
-            onClick={() => {
-              tarefa.status = !tarefa.status;
-              setTarefasConcluidas([...tarefasConcluidas, tarefa]);
-            }}
-          />
           {tarefa.status && (
             <label htmlFor={tarefa.id} className="line-through">
               {tarefa.nome}
