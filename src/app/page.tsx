@@ -29,6 +29,36 @@ export default function Home() {
     console.log(tarefasConcluidas);
   }, [tarefasConcluidas]);
 
+  function displayTarefas() {
+    //if filter = 0 display all tasks. If filter = 1 display only active tasks. If filter = 2 display only completed tasks.
+    let filter = 0;
+    if (tarefas.length > 0 && filter === 0) {
+      return tarefas.map((tarefa) => (
+        <li key={tarefa.id}>
+          <input
+            type="checkbox"
+            onClick={() => {
+              tarefa.status = !tarefa.status;
+              setTarefasConcluidas([...tarefasConcluidas, tarefa]);
+            }}
+          />
+          {tarefa.status && (
+            <label htmlFor={tarefa.id} className="line-through">
+              {tarefa.nome}
+            </label>
+          )}
+          {!tarefa.status && (
+            <label className="bg-green-400" htmlFor={tarefa.id}>
+              {tarefa.nome}
+            </label>
+          )}
+        </li>
+      ));
+    } else {
+      return <li>Não há tarefas</li>;
+    }
+  }
+
   return (
     <div className="h-screen flex items-center justify-center flex-col">
       <h1>PraFazê </h1> {/* colocar ícone depois */}
@@ -49,31 +79,12 @@ export default function Home() {
         </div>
         <div>
           <ul>
-            {tarefas.map((tarefa) => (
-              <li key={tarefa.id}>
-                <input
-                  type="checkbox"
-                  onClick={() => {
-                    tarefa.status = !tarefa.status;
-                    setTarefasConcluidas([...tarefasConcluidas, tarefa]);
-                  }}
-                />
-                {tarefa.status && (
-                  <label htmlFor={tarefa.id} className="line-through">
-                    {tarefa.nome}
-                  </label>
-                )}
-                {!tarefa.status && (
-                  <label className="bg-green-400" htmlFor={tarefa.id}>
-                    {tarefa.nome}
-                  </label>
-                )}
-              </li>
-            ))}
+            <li>Tarefas</li>
+            {displayTarefas()}
           </ul>
         </div>
         <div className="flex flex-row">
-          <button>Tarefas restantes</button>
+          <p>Contador de Tarefas restantes</p>
           <button>Todas as tarefas</button>
           <button>Tarefas Ativas</button>
           <button>Tarefas Completas</button>
