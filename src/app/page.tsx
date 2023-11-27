@@ -1,12 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 
-interface Tarefa {
-  id: string;
-  nome: string;
-  status: boolean;
-}
-
 export default function Home() {
   const [tarefaParaAdicionar, setTarefaParaAdicionar] = useState("");
 
@@ -29,6 +23,16 @@ export default function Home() {
     console.log(tarefas);
   }, [tarefas]);
 
+  function tarefasRestantes() {
+    let count = 0;
+    tarefas.forEach((tarefa) => {
+      if (!tarefa.status) {
+        count++;
+      }
+    });
+    return count;
+  }
+
   function displayTarefas(filter: number) {
     //if filter = 0 display all tasks. If filter = 1 display only active tasks. If filter = 2 display only completed tasks.
     if (tarefas.length > 0 && filter === 0) {
@@ -48,9 +52,18 @@ export default function Home() {
             </label>
           )}
           {!tarefa.status && (
-            <label className="bg-green-400" htmlFor={tarefa.id}>
-              {tarefa.nome}
-            </label>
+            <div className="flex flex-row">
+              <label className="bg-green-400" htmlFor={tarefa.id}>
+                {tarefa.nome}
+              </label>
+              <button
+                onClick={() => {
+                  setTarefas(tarefas.filter((item) => item.id !== tarefa.id));
+                }}
+              >
+                X
+              </button>
+            </div>
           )}
         </li>
       ));
@@ -87,7 +100,10 @@ export default function Home() {
           <button
             onClick={() =>
               handleClick(
-                (parseInt(tarefas[tarefas.length - 1].id) + 1).toString(),
+                (tarefas.length > 0
+                  ? parseInt(tarefas[tarefas.length - 1].id) + 1
+                  : 0
+                ).toString(),
                 tarefaParaAdicionar
               )
             }
@@ -104,7 +120,7 @@ export default function Home() {
           </ul>
         </div>
         <div className="flex flex-row">
-          <p>Contador de Tarefas restantes</p>
+          <p>Tarefas restantes: {tarefasRestantes()} </p>
           <button onClick={() => setFiltro(0)}>Todas as tarefas</button>
           <button onClick={() => setFiltro(1)}>Tarefas Ativas</button>
           <button onClick={() => setFiltro(2)}>Tarefas Completas</button>
